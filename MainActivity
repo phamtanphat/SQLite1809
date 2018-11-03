@@ -1,0 +1,61 @@
+package khoapham.ptp.phamtanphat.sqlite;
+
+import android.database.Cursor;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.util.Log;
+import android.widget.ListView;
+
+import java.util.ArrayList;
+
+public class MainActivity extends AppCompatActivity {
+
+    SQLite sqLite;
+    ListView lvMonan;
+    MonanAdapter monanAdapter;
+    ArrayList<Monan> mangmonan;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        //Khoi tao database
+           // Tao bang
+//        String createDb = "CREATE TABLE IF NOT EXISTS Monan(Id INTEGER PRIMARY KEY AUTOINCREMENT , Tenmonan VARCHAR , Giamonan VARCHAR , Diadiem VARCHAR)";
+//        sqLite.QueryData(createDb);
+
+        //Them du lieu
+//        String inserttable = "INSERT INTO Monan VALUES (null , 'Com suon' , 30000 , 'Quan 2')";
+//        String inserttable1 = "INSERT INTO Monan VALUES (null , 'Hu to bo kho' , 28000 , 'Quan 3')";
+//        String inserttable2 = "INSERT INTO Monan VALUES (null , 'Banh canh cua' , 38000 , 'Quan 4')";
+//        String inserttable3 = "INSERT INTO Monan VALUES (null , 'Kem chien' , 20000 , 'Quan 5')";
+//        sqLite.QueryData(inserttable);
+//        sqLite.QueryData(inserttable1);
+//        sqLite.QueryData(inserttable2);
+//        sqLite.QueryData(inserttable3);
+        // Lay du lieu
+        init();
+        createTable();
+        selectAllData();
+    }
+    private void init(){
+        lvMonan = findViewById(R.id.listviewMonan);
+        mangmonan = new ArrayList<>();
+        monanAdapter = new MonanAdapter(MainActivity.this,android.R.layout.simple_list_item_1,mangmonan);
+        lvMonan.setAdapter(monanAdapter);
+    }
+    private void createTable(){
+        sqLite = new SQLite(this,"Quanlymonan.sql",null,1);
+    }
+    private void selectAllData(){
+        String data = "SELECT * FROM Monan";
+        Cursor cursor = sqLite.GetData(data);
+        while (cursor.moveToNext()){
+            int id = cursor.getInt(0);
+            String tenmonan = cursor.getString(1);
+            String giamonan = cursor.getString(2);
+            String diachi = cursor.getString(3);
+            mangmonan.add(new Monan(id,tenmonan,giamonan,diachi));
+        }
+        monanAdapter.notifyDataSetChanged();
+    }
+}
